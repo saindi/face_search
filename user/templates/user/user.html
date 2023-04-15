@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href=" {% static '/css/user.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="mt-3">User profile: {{ user.username }} </h2>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card" style="height: 100%">
+                    <div class="card-body">
+                        <div class="d-flex mb-2">
+                            <h5 class="text-center font-weight-normal text-center mt-2">
+                                {{ user.email }}
+                            </h5>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

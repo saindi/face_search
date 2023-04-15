@@ -1,0 +1,47 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg bg-light ">
+    <div class="container-fluid ms-5 me-5">
+        <a class="navbar-brand" href="{% url 'face:home' %}">
+            <img src="{% static '/img/logo.png' %}" width="35" height="40" class="d-inline-block align-top" alt="">
+        </a>
+
+        <a class="navbar-brand name" href="{% url 'face:search' %}">Face search</a>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link name" href="{% url 'face:home' %}">Home</a>
+                </li>
+
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item name">
+                        <a class="nav-link name" href="{% url 'face:search' %}">Search</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link name" href="{% url 'user:profile' %}">{{ user.username }}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link name" href="{% url 'user:logout' %}">Logout</a>
+                    </li>
+
+                {% else %}
+
+                    <li class="nav-item">
+                        <a class="nav-link name" href="{% url 'user:sign-in' %}">Вхiд</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link name" href="{% url 'user:sign-up' %}">Реєстрація</a>
+                    </li>
+
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+    <link rel="stylesheet" href=" {% static '/css/search.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <section>
+        <div class="container pb-4">
+
+            <h2 class="text-center m-4">Результат пошуку</h2>
+
+            {% if faces %}
+
+                {% for face in faces %}
+                    <div><h4>Coordinates: {{ face.coordinates }}. Количество
+                        найденых лиц: {{ face.coincidences|length }}</h4></div>
+
+                    {% if face.info.documents|length != 0 or  face.info.avatars|length != 0 %}
+
+                        {% if face.info.documents %}
+                            <h3 class="">Documents: </h3>
+                            {% for document in face.info.documents %}
+                                <div class="mt-2">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="row">
+                                                        <div class="col-sm-2">
+                                                            <p class="mb-0">Source:</p>
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            <p class="text-muted mb-0">{{ document.source }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-2">
+                                                            <p class="mb-0">Document number:</p>
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            <p class="text-muted mb-0">{{ document.document_number }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-2">
+                                                            <p class="mb-0">Name:</p>
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            <p class="text-muted mb-0">{{ document.name }}</p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if face.info.avatars %}
+                            <h3 class="">Avatars: </h3>
+                            {% for avatar in face.info.avatars %}
+                                <div class="mt-2">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="row">
+                                                        <div class="col-sm-2">
+                                                            <p class="mb-0">Source:</p>
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            <p class="text-muted mb-0">{{ avatar.source }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-2">
+                                                            <p class="mb-0">Profile id:</p>
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            <p class="text-muted mb-0">{{ avatar.profile_id }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-2">
+                                                            <p class="mb-0">Name:</p>
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            <p class="text-muted mb-0">{{ avatar.name }}</p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+
+
+                    {% else %}
+                        <h3 class="text-center">Немає результату</h3>
+                    {% endif %}
+
+                {% endfor %}
+
+            {% else %}
+                <h3 class="text-center">На цьому фото немає людини</h3>
+            {% endif %}
+
+        </div>
+    </section>
+{% endblock %}

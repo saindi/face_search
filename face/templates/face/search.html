@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+    <link rel="stylesheet" href=" {% static '/css/search.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <section>
+        <div class="container">
+
+            <h2 class="text-center mt-4">Пошук по обличчю</h2>
+
+            <div class="row">
+                <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                    <div class="card border-0 shadow rounded-3 my-5">
+                        <div class="card-body p-4 p-sm-5">
+                            <h4 class="card-title text-center mb-4 fw-light">Завантажте фотографію</h4>
+                            <form method="post"  enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <p><center>{{ form.img }}</center></p>
+
+                                <p>
+                                    {{ form.img.errors }}
+                                </p>
+
+                                <div class="d-grid">
+                                    <button class="btn btn-primary btn-login text-uppercase fw-bold mt-2" type="submit">Пошук</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

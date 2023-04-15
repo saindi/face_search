@@ -1,0 +1,49 @@
+#centerLayer {
+    margin-left: 25%; /* Отступ слева */
+    margin-top: 10%;
+    width: 50%; /* Ширина слоя */
+    padding: 10px; /* Поля вокруг текста */
+}
+
+#centerLayer2 {
+    margin-left: 40%; /* Отступ слева */
+    width: 50%; /* Ширина слоя */
+}
+
+header {
+    font-family: Arial, Helvetica, Verdana, sans-serif; /* Гарнитура шрифта */
+    font-size: 230%; /* Размер текста */
+    font-weight: lighter; /* Светлое начертание */
+}
+
+#size {
+    font-family: Arial, Helvetica, Verdana, sans-serif; /* Гарнитура шрифта */
+    font-size: 230%; /* Размер текста */
+    font-weight: lighter; /* Светлое начертание */
+}
+
+body {
+    height: 100%;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 80px;
+}
+
+.textcols {
+    white-space: nowrap;
+}
+
+.textcols-item {
+    white-space: normal;
+    display: inline-block;
+    width: 48%;
+    vertical-align: top;
+}
+
+.textcols .textcols-item:first-child {
+    margin-right: 4%;
+}

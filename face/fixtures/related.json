@@ -1,0 +1,47 @@
+[
+    {
+        "model": "face.relatedmodel",
+        "pk": 1,
+        "fields": {
+            "face_id": 2,
+            "table_name": "face_avatarmodel",
+            "record_id": 2
+        }
+    },
+    {
+        "model": "face.relatedmodel",
+        "pk": 2,
+        "fields": {
+            "face_id": 3,
+            "table_name": "face_avatarmodel",
+            "record_id": 3
+        }
+    },
+    {
+        "model": "face.relatedmodel",
+        "pk": 3,
+        "fields": {
+            "face_id": 4,
+            "table_name": "face_documentmodel",
+            "record_id": 1
+        }
+    },
+    {
+        "model": "face.relatedmodel",
+        "pk": 4,
+        "fields": {
+            "face_id": 5,
+            "table_name": "face_documentmodel",
+            "record_id": 2
+        }
+    },
+    {
+        "model": "face.relatedmodel",
+        "pk": 5,
+        "fields": {
+            "face_id": 5,
+            "table_name": "face_avatarmodel",
+            "record_id": 4
+        }
+    }
+]

@@ -1,0 +1,29 @@
+[
+    {
+        "model": "face.avatarmodel",
+        "pk": 2,
+        "fields": {
+            "source": "vk",
+            "profile_id": "987656787654",
+            "name": "\u0412\u043b\u0430\u0434\u0438\u043c\u0438\u0440 \u041c\u043e\u0440\u043e\u0437"
+        }
+    },
+    {
+        "model": "face.avatarmodel",
+        "pk": 3,
+        "fields": {
+            "source": "tg",
+            "profile_id": "+380634739864",
+            "name": "\u041d\u0430\u0441\u0442\u044f"
+        }
+    },
+    {
+        "model": "face.avatarmodel",
+        "pk": 4,
+        "fields": {
+            "source": "viber",
+            "profile_id": "+380943586711",
+            "name": "\u0412\u0430\u0434\u0438\u043c"
+        }
+    }
+]

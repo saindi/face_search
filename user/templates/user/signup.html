@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head %}
+    <link rel="stylesheet" href=" {% static '/css/sign.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row d-flex justify-content-center align-items-center h-75">
+        <div class="col-md-3 col-6">
+            <h2>Sign Up</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-floating mb-3">  <!-- username input -->
+                    {{ form.username }}
+                    <label class="form-label">{{ form.username.label }}</label>
+                    <p>{{ form.username.errors }}</p>
+                </div>
+
+                <div class="form-floating mb-3">  <!-- email input -->
+                    {{ form.email }}
+                    <label class="form-label">{{ form.email.label }}</label>
+                    <p>{{ form.email.errors }}</p>
+                </div>
+
+                <div class="form-floating mb-3">  <!-- password input -->
+
+                    {{ form.password1 }}
+                    <label class="form-label">{{ form.password1.label }}</label>
+                </div>
+
+                <div class="form-floating mb-3">  <!-- confirm password input -->
+                    {{ form.password2 }}
+                    <label class="form-label">{{ form.password2.label }}</label>
+                    <p>{{ form.non_field_errors }}</p>
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Sign up</button>
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <p class="text-muted">Already has an account?
+                        <a class="text-body fw-bold ms-1" href="{% url 'user:sign-in' %}">Sign In</a>.
+                    </p>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
