@@ -11,13 +11,13 @@
     <section>
         <div class="container pb-4">
 
-            <h2 class="text-center m-4">Результат пошуку</h2>
+            <h2 class="text-center m-4">Search result</h2>
 
             {% if faces %}
 
                 {% for face in faces %}
-                    <div><h4>Coordinates: {{ face.coordinates }}. Количество
-                        найденых лиц: {{ face.coincidences|length }}</h4></div>
+                    <div><h4>Coordinates: {{ face.coordinates }}. Number
+                        persons found: {{ face.coincidences|length }}</h4></div>
 
                     {% if face.info.documents|length != 0 or  face.info.avatars|length != 0 %}
 
@@ -116,13 +116,13 @@
 
 
                     {% else %}
-                        <h3 class="text-center">Немає результату</h3>
+                        <h3 class="text-center">No results</h3>
                     {% endif %}
 
                 {% endfor %}
 
             {% else %}
-                <h3 class="text-center">На цьому фото немає людини</h3>
+                <h3 class="text-center">There is no person in this photo.</h3>
             {% endif %}
 
         </div>
