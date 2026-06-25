@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import JsonResponse
 
 from rest_framework.response import Response
@@ -14,7 +15,7 @@ from api.serializers import (
     UploadDataSerializers,
 )
 
-from face.models import load_data, FaceModel
+from face.models import load_data, FaceModel, DocumentModel, AvatarModel
 from user.models import UserModel
 
 from services import FaceCompare
@@ -37,6 +38,35 @@ class GenerateTokenView(APIView):
             pass
 
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+
+class StatsAPIView(APIView):
+    """
+        View for database statistics: how many faces / documents / avatars
+        are stored and how they are split by source.
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication, TokenAuthentication]
+
+    @staticmethod
+    def _by_source(queryset):
+        return {
+            row['source']: row['count']
+            for row in queryset.values('source').annotate(count=Count('id')).order_by('source')
+        }
+
+    def get(self, request):
+        return Response({
+            'faces': FaceModel.objects.count(),
+            'documents': {
+                'total': DocumentModel.objects.count(),
+                'by_source': self._by_source(DocumentModel.objects),
+            },
+            'avatars': {
+                'total': AvatarModel.objects.count(),
+                'by_source': self._by_source(AvatarModel.objects),
+            },
+        })
 
 
 class IdentifyAPIView(APIView):
