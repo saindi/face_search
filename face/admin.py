@@ -4,6 +4,7 @@ from face.models import (
     RelatedModel,
     AvatarModel,
     DocumentModel,
+    SearchLog,
 )
 
 
@@ -25,3 +26,10 @@ class DocumentModelAdmin(admin.ModelAdmin):
 @admin.register(AvatarModel)
 class AvatarModelAdmin(admin.ModelAdmin):
     list_display = ['id', 'source', 'profile_id', 'name']
+
+
+@admin.register(SearchLog)
+class SearchLogAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'faces_found', 'matches_found', 'created_at']
+    list_filter = ['created_at']
+    readonly_fields = ['user', 'faces_found', 'matches_found', 'created_at']
