@@ -9,6 +9,10 @@ from PIL import Image, ImageDraw
     The business logic of the project
 """
 
+# Default face matching tolerance. Lower is stricter (fewer false matches);
+# face_recognition's own default is 0.6.
+DEFAULT_TOLERANCE = 0.45
+
 
 class FaceCompare:
     """
@@ -78,10 +82,11 @@ class FaceCompare:
 
         return dict(zip(locations, faces))
 
-    def compare(self):
+    def compare(self, tolerance=DEFAULT_TOLERANCE):
         """
             Compares clipped faces with faces from data list
 
+            :param tolerance: matching threshold; lower is stricter
             :return: list which consists of dictionaries - coordinates of faces: matches from data
         """
 
@@ -93,7 +98,7 @@ class FaceCompare:
             faces_encoding.append(face_encoding)
 
         for locate in self.imgs_extracting_faces:
-            result_compare = face_recognition.compare_faces(faces_encoding, self.imgs_extracting_faces[locate][1], 0.45)
+            result_compare = face_recognition.compare_faces(faces_encoding, self.imgs_extracting_faces[locate][1], tolerance)
 
             result_face = []
 
