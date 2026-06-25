@@ -35,7 +35,8 @@ def insert_record(data):
 
     for info in data:
         cur.execute(
-            f"SELECT id FROM face_facemodel WHERE face_encoding='{info[len(info) - 1]}'"
+            "SELECT id FROM face_facemodel WHERE face_encoding = %s",
+            (info[len(info) - 1],)
         )
 
         face = cur.fetchall()
@@ -44,7 +45,8 @@ def insert_record(data):
             face_id = face[0][0]
         else:
             cur.execute(
-                f"INSERT INTO face_facemodel (face_encoding) VALUES ('{info[len(info) - 1]}') RETURNING id"
+                "INSERT INTO face_facemodel (face_encoding) VALUES (%s) RETURNING id",
+                (info[len(info) - 1],)
             )
             conn.commit()
 
@@ -52,29 +54,29 @@ def insert_record(data):
 
         if info[0] in CHOICES_DOCUMENT:
             cur.execute(
-                f"INSERT INTO face_documentmodel (source, document_number, name) VALUES (%s, %s, %s) RETURNING id",
+                "INSERT INTO face_documentmodel (source, document_number, name) VALUES (%s, %s, %s) RETURNING id",
                 (info[0], info[1], info[2])
             )
             conn.commit()
             document_id = cur.fetchall()[0][0]
 
             cur.execute(
-                f"INSERT INTO face_relatedmodel (face_id, table_name, record_id) "
-                f"VALUES ({face_id}, '{DOCUMENT_TABLE}', {document_id}) RETURNING id"
+                "INSERT INTO face_relatedmodel (face_id, table_name, record_id) VALUES (%s, %s, %s) RETURNING id",
+                (face_id, DOCUMENT_TABLE, document_id)
             )
             conn.commit()
 
         elif info[0] in CHOICES_AVATAR:
             cur.execute(
-                f"INSERT INTO face_avatarmodel (source, profile_id, name) VALUES (%s, %s, %s) RETURNING id",
+                "INSERT INTO face_avatarmodel (source, profile_id, name) VALUES (%s, %s, %s) RETURNING id",
                 (info[0], info[1], info[2])
             )
             conn.commit()
             avatar_id = cur.fetchall()[0][0]
 
             cur.execute(
-                f"INSERT INTO face_relatedmodel (face_id, table_name, record_id) "
-                f"VALUES ({face_id}, '{AVATAR_TABLE}', {avatar_id}) RETURNING id"
+                "INSERT INTO face_relatedmodel (face_id, table_name, record_id) VALUES (%s, %s, %s) RETURNING id",
+                (face_id, AVATAR_TABLE, avatar_id)
             )
             conn.commit()
 
