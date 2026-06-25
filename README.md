@@ -1,5 +1,10 @@
 # Face Search
 
+[![CI](https://github.com/saindi/face_search/actions/workflows/ci.yml/badge.svg)](https://github.com/saindi/face_search/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
+[![Django 4.0](https://img.shields.io/badge/django-4.0-092E20.svg)](https://www.djangoproject.com/)
+
 Face Search is a Django web service that identifies people on a photo by
 matching detected faces against a database of known face encodings, and
 returns the information linked to each match — identity documents
