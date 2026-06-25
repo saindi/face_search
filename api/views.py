@@ -1,5 +1,7 @@
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -14,7 +16,13 @@ from api.serializers import (
     UploadDataSerializers,
 )
 
-from face.models import load_data, FaceModel
+from face.models import (
+    load_data,
+    FaceModel,
+    RelatedModel,
+    DocumentModel,
+    AvatarModel,
+)
 from user.models import UserModel
 
 from services import FaceCompare
@@ -37,6 +45,47 @@ class GenerateTokenView(APIView):
             pass
 
         return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
+
+class FaceDeleteAPIView(APIView):
+    """
+        View for deleting a face and everything related to it.
+
+        RelatedModel rows are removed via the FaceModel CASCADE, but the
+        DocumentModel / AvatarModel rows they point to live in separate
+        tables (linked by record_id, not a FK), so they have to be cleaned
+        up explicitly to avoid orphaned records.
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication, TokenAuthentication]
+
+    def delete(self, request, pk):
+        face = get_object_or_404(FaceModel, pk=pk)
+
+        relations = face.related.all()
+
+        document_ids = [
+            r.record_id for r in relations
+            if r.table_name == RelatedModel.TableName.DOCUMENT
+        ]
+        avatar_ids = [
+            r.record_id for r in relations
+            if r.table_name == RelatedModel.TableName.AVATAR
+        ]
+
+        deleted_documents, _ = DocumentModel.objects.filter(id__in=document_ids).delete()
+        deleted_avatars, _ = AvatarModel.objects.filter(id__in=avatar_ids).delete()
+
+        face.delete()  # cascades the RelatedModel rows
+
+        return Response(
+            {
+                'deleted_face_id': pk,
+                'deleted_documents': deleted_documents,
+                'deleted_avatars': deleted_avatars,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class IdentifyAPIView(APIView):

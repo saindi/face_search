@@ -11,4 +11,6 @@ urlpatterns = [
     path('api/token-auth/', ObtainAuthToken.as_view(), name='api-token-auth'),
 
     path('api/identify/', views.IdentifyAPIView.as_view(), name="identify"),
+
+    path('api/face/<int:pk>/', views.FaceDeleteAPIView.as_view(), name="face-delete"),
 ]
