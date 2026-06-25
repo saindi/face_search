@@ -133,6 +133,8 @@ class IdentifyAPIView(APIView):
                 serializer.validated_data['photo'], FaceModel.objects.all()
             ).compare(tolerance=tolerance)
 
+            SearchLog.record(request.user, faces_on_upload_img)
+
             FaceModel.get_info_on_faces(faces_on_upload_img)
 
             s = ResultSerializers({

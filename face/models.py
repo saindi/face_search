@@ -1,6 +1,7 @@
 import io
 import zipfile
 
+from django.conf import settings
 from django.db import models
 
 from services import FaceCompare
@@ -218,3 +219,48 @@ class AvatarModel(models.Model):
 
     def __str__(self):
         return f"source:{self.source}; profile_id:{self.profile_id}; name:{self.name};"
+
+
+class SearchLog(models.Model):
+    """
+        Audit record for a single face-search request: who searched, when,
+        how many faces were detected on the photo and how many matches were
+        found in the database.
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='search_logs',
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    faces_found = models.PositiveIntegerField(default=0)
+
+    matches_found = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Журнал пошуку"
+        verbose_name_plural = "Журнал пошуку"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"user:{self.user}; faces:{self.faces_found}; matches:{self.matches_found}; at:{self.created_at};"
+
+    @staticmethod
+    def record(user, faces_on_upload_img):
+        """
+            Create a log entry from the result of FaceCompare.compare().
+
+            :param user: the requesting user (may be anonymous)
+            :param faces_on_upload_img: list of dicts with a 'coincidences' key
+        """
+        matches = sum(len(face.get('coincidences', [])) for face in faces_on_upload_img)
+
+        return SearchLog.objects.create(
+            user=user if getattr(user, 'is_authenticated', False) else None,
+            faces_found=len(faces_on_upload_img),
+            matches_found=matches,
+        )
