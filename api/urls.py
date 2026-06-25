@@ -15,4 +15,6 @@ urlpatterns = [
     path('api/health/', views.HealthCheckAPIView.as_view(), name="health"),
 
     path('api/stats/', views.StatsAPIView.as_view(), name="stats"),
+
+    path('api/face/<int:pk>/', views.FaceDeleteAPIView.as_view(), name="face-delete"),
 ]
