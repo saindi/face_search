@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -17,7 +18,7 @@ from api.serializers import (
 from face.models import load_data, FaceModel
 from user.models import UserModel
 
-from services import FaceCompare
+from services import FaceCompare, DEFAULT_TOLERANCE
 
 
 class GenerateTokenView(APIView):
@@ -46,12 +47,33 @@ class IdentifyAPIView(APIView):
     def get(self, request):
         """
             Find a match for the photo
+
+            Optional query param ?tolerance=<float> overrides the matching
+            threshold (must be in the (0, 1] range). Lower is stricter.
         """
         serializer = UploadPhotoSerializers(data=request.data)
 
         if serializer.is_valid():
 
-            faces_on_upload_img = FaceCompare(serializer.validated_data['photo'], FaceModel.objects.all()).compare()
+            tolerance = DEFAULT_TOLERANCE
+            raw_tolerance = request.query_params.get('tolerance')
+            if raw_tolerance is not None:
+                try:
+                    tolerance = float(raw_tolerance)
+                except ValueError:
+                    return Response(
+                        {'tolerance': 'Must be a number in the (0, 1] range.'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                if not 0 < tolerance <= 1:
+                    return Response(
+                        {'tolerance': 'Must be in the (0, 1] range.'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
+            faces_on_upload_img = FaceCompare(
+                serializer.validated_data['photo'], FaceModel.objects.all()
+            ).compare(tolerance=tolerance)
 
             FaceModel.get_info_on_faces(faces_on_upload_img)
 
