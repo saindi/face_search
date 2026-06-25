@@ -12,5 +12,7 @@ urlpatterns = [
 
     path('api/identify/', views.IdentifyAPIView.as_view(), name="identify"),
 
+    path('api/health/', views.HealthCheckAPIView.as_view(), name="health"),
+
     path('api/stats/', views.StatsAPIView.as_view(), name="stats"),
 ]
