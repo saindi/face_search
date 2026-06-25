@@ -1,0 +1,15 @@
+# Ruff configuration. See https://docs.astral.sh/ruff/
+target-version = "py38"
+line-length = 120
+
+# Generated / vendored code that should not be linted.
+extend-exclude = [
+    "*/migrations/*",
+    "static",
+]
+
+[lint]
+# Start with the critical correctness checks (syntax errors, undefined
+# names, broken f-strings). This keeps CI green on the existing code while
+# still catching real bugs. Tighten this list as the codebase is cleaned up.
+select = ["E9", "F63", "F7", "F82"]
