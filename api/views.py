@@ -19,7 +19,7 @@ from api.serializers import (
 )
 
 
-from face.models import load_data, FaceModel, DocumentModel, AvatarModel
+from face.models import load_data, FaceModel, DocumentModel, AvatarModel, RelatedModel, SearchLog
 from user.models import UserModel
 
 from services import FaceCompare, DEFAULT_TOLERANCE

@@ -21,6 +21,12 @@
                         <a class="nav-link name" href="{% url 'face:search' %}">Search</a>
                     </li>
 
+                    {% if user.is_staff %}
+                        <li class="nav-item name">
+                            <a class="nav-link name" href="{% url 'face:dashboard' %}">Dashboard</a>
+                        </li>
+                    {% endif %}
+
                     <li class="nav-item">
                         <a class="nav-link name" href="{% url 'user:profile' %}">{{ user.username }}</a>
                     </li>

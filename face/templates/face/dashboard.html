@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+    <style>
+        .stat-card { border: 1px solid #dee2e6; border-radius: .5rem; padding: 1rem 1.25rem; height: 100%; }
+        .stat-card .value { font-size: 1.75rem; font-weight: 600; line-height: 1.1; }
+        .stat-card .label { color: #6c757d; font-size: .85rem; text-transform: uppercase; letter-spacing: .03em; }
+
+        .bar-chart { display: flex; align-items: flex-end; gap: 2px; height: 160px;
+                     border-bottom: 1px solid #dee2e6; padding-top: .5rem; overflow-x: auto; }
+        .bar-chart .bar { flex: 1 0 6px; min-width: 6px; background: #0d6efd; border-radius: 2px 2px 0 0;
+                          align-self: flex-end; }
+        .bar-chart .bar.empty { background: #e9ecef; }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <section class="container pb-5">
+
+        <h2 class="m-4 text-center">Search analytics &amp; audit</h2>
+
+        {# ---- Filters ---- #}
+        <form method="get" class="row g-2 align-items-end mb-4">
+            <div class="col-auto">
+                <label class="form-label mb-0 small">From</label>
+                <input type="date" name="date_from" value="{{ filters.date_from|date:'Y-m-d' }}" class="form-control form-control-sm">
+            </div>
+            <div class="col-auto">
+                <label class="form-label mb-0 small">To</label>
+                <input type="date" name="date_to" value="{{ filters.date_to|date:'Y-m-d' }}" class="form-control form-control-sm">
+            </div>
+            <div class="col-auto">
+                <label class="form-label mb-0 small">User</label>
+                <input type="text" name="user" value="{{ filters.user }}" placeholder="username" class="form-control form-control-sm">
+            </div>
+            <div class="col-auto">
+                <label class="form-label mb-0 small">Matches</label>
+                <select name="matches" class="form-select form-select-sm">
+                    <option value="">Any</option>
+                    <option value="with" {% if filters.matches == 'with' %}selected{% endif %}>With matches</option>
+                    <option value="without" {% if filters.matches == 'without' %}selected{% endif %}>No matches</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-primary">Apply</button>
+            </div>
+            <div class="col-auto">
+                <a class="btn btn-sm btn-outline-secondary"
+                   href="{% url 'face:dashboard-export' %}?date_from={{ filters.date_from|date:'Y-m-d' }}&date_to={{ filters.date_to|date:'Y-m-d' }}&user={{ filters.user|urlencode }}&matches={{ filters.matches }}">
+                    Export CSV
+                </a>
+            </div>
+        </form>
+
+        {# ---- Summary cards ---- #}
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md">
+                <div class="stat-card"><div class="value">{{ summary.total_searches }}</div><div class="label">Searches</div></div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="stat-card"><div class="value">{{ summary.searches_with_matches }}</div><div class="label">With matches</div></div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="stat-card"><div class="value">{{ summary.success_rate }}%</div><div class="label">Hit rate</div></div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="stat-card"><div class="value">{{ summary.faces_detected }}</div><div class="label">Faces detected</div></div>
+            </div>
+            <div class="col-6 col-md">
+                <div class="stat-card"><div class="value">{{ summary.matches }}</div><div class="label">Total matches</div></div>
+            </div>
+        </div>
+
+        {# ---- Daily trend ---- #}
+        <h5>Searches per day</h5>
+        <div class="bar-chart mb-2">
+            {% for entry in daily %}
+                <div class="bar {% if entry.count == 0 %}empty{% endif %}"
+                     style="height: {% if entry.height %}{{ entry.height }}%{% else %}2px{% endif %};"
+                     title="{{ entry.day|date:'Y-m-d' }}: {{ entry.count }}"></div>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-between text-muted small mb-4">
+            <span>{{ filters.date_from|date:'Y-m-d' }}</span>
+            <span>{{ filters.date_to|date:'Y-m-d' }}</span>
+        </div>
+
+        <div class="row g-4 mb-4">
+            {# ---- Database breakdown ---- #}
+            <div class="col-md-6">
+                <h5>Database</h5>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between"><span>Faces</span><strong>{{ database.faces }}</strong></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>Documents</span><strong>{{ database.documents }}</strong></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>Avatars</span><strong>{{ database.avatars }}</strong></li>
+                </ul>
+
+                <h6 class="text-muted">Documents by source</h6>
+                <ul class="list-group mb-3">
+                    {% for row in database.documents_by_source %}
+                        <li class="list-group-item d-flex justify-content-between py-1"><span>{{ row.source }}</span><span>{{ row.count }}</span></li>
+                    {% empty %}
+                        <li class="list-group-item py-1 text-muted">No data</li>
+                    {% endfor %}
+                </ul>
+
+                <h6 class="text-muted">Avatars by source</h6>
+                <ul class="list-group">
+                    {% for row in database.avatars_by_source %}
+                        <li class="list-group-item d-flex justify-content-between py-1"><span>{{ row.source }}</span><span>{{ row.count }}</span></li>
+                    {% empty %}
+                        <li class="list-group-item py-1 text-muted">No data</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {# ---- Top users ---- #}
+            <div class="col-md-6">
+                <h5>Top users</h5>
+                <table class="table table-sm">
+                    <thead><tr><th>User</th><th class="text-end">Searches</th><th class="text-end">Matches</th></tr></thead>
+                    <tbody>
+                        {% for row in top_users %}
+                            <tr>
+                                <td>{{ row.user__username }}</td>
+                                <td class="text-end">{{ row.searches }}</td>
+                                <td class="text-end">{{ row.matches|default:0 }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="3" class="text-muted">No searches in this range</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# ---- Recent searches ---- #}
+        <h5>Recent searches <span class="text-muted small">(latest {{ recent_limit }})</span></h5>
+        <table class="table table-sm table-striped">
+            <thead><tr><th>When</th><th>User</th><th class="text-end">Faces</th><th class="text-end">Matches</th></tr></thead>
+            <tbody>
+                {% for log in recent %}
+                    <tr>
+                        <td>{{ log.created_at|date:'Y-m-d H:i' }}</td>
+                        <td>{{ log.user.username|default:'—' }}</td>
+                        <td class="text-end">{{ log.faces_found }}</td>
+                        <td class="text-end">{{ log.matches_found }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-muted">No searches match these filters</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+{% endblock %}

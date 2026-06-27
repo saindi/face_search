@@ -8,4 +8,6 @@ app_name = "face"
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='face:search'), name="home"),
     path('search/', views.FaceSearchView.as_view(), name="search"),
+    path('dashboard/', views.DashboardView.as_view(), name="dashboard"),
+    path('dashboard/export.csv', views.SearchLogExportView.as_view(), name="dashboard-export"),
 ]
