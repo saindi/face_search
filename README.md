@@ -37,6 +37,9 @@ API for programmatic access and data ingestion.
 - **Face deletion** — remove a face together with all of its linked records.
 - **Search audit log** — every identification request is recorded (user,
   time, faces detected, matches found).
+- **Analytics dashboard** — staff-only page summarising search activity
+  (totals, hit rate, daily trend, top users) and database composition, with
+  date / user / match filters and CSV export of the audit log.
 - **Health check** — unauthenticated endpoint for monitoring / orchestration.
 
 ## Tech stack
@@ -112,8 +115,9 @@ The web app is served on port `8000` and proxied by nginx on port `80`.
 
 | Path        | Description                                   |
 |-------------|-----------------------------------------------|
-| `/`         | Redirects to the search page                  |
-| `/search/`  | Upload a photo and search for matches (login) |
+| `/`          | Redirects to the search page                  |
+| `/search/`   | Upload a photo and search for matches (login) |
+| `/dashboard/`| Search analytics & audit dashboard (staff)    |
 | `/signin/`  | Sign in                                       |
 | `/signup/`  | Sign up                                       |
 | `/admin/`   | Django admin                                  |
